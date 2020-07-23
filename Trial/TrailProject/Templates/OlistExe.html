@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Olist Executive</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!--	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+	<style>
+		.vikram {
+			 	width: 90%;
+
+			 float: center;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                text-align: center;
+                height: 100%;
+            }
+		.xyz{
+			background-color: #00bfff;
+			font-weight: bold;
+		}
+		.hel{
+			color: #fffff0;
+		}
+	</style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!--<nav class="navbar navbar-default">-->
+<!--	<div class="container">-->
+<!--		<div class="navbar-header">-->
+<!--			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">-->
+<!--			<span class="sr-only">Toggle navigation</span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--			</button>-->
+<!--			<a href="OlistHome.html" class="navbar-brand">Olist Store</a>-->
+<!--		</div>-->
+<!--		<div class="collapse navbar-collapse" id="bs-nav-demo">-->
+<!--			<ul class="nav navbar-nav">-->
+<!--				<li><a href="#">About</a></li>-->
+<!--				<li><a href="#">Contact</a></li>-->
+<!--			</ul>-->
+<!--			<ul class="nav navbar-nav navbar-right">-->
+<!--				<li><a href="#">Sign Up</a></li>-->
+<!--				<li><a href="#">Login</a></li>-->
+<!--			</ul>-->
+<!--	</div>-->
+<!--</nav>-->
+<nav class="navbar navbar-expand-lg xyz">
+  <a class="navbar-brand hel" href="OlistHome.html">Olist Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+		<a class="nav-item nav-link active hel" href="Seller.html">Sellers <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="Customer.html">Customers <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link active hel" href="Facts.html">Facts Page <span class="sr-only">(current)</span></a>
+
+    </div>
+  </div>
+</nav>
+<h1></h1>
+<div class="container vikram">
+	<canvas id="NumberOfCustomers"></canvas>
+</div>
+					<script type="text/javascript">
+                			let customer_count_jo = {{data2 | safe}}
+							console.log("in java script")
+							console.log(customer_count_jo)
+							var x1 = customer_count_jo['customer_year']
+							var x2= customer_count_jo['customer_count']
+							console.log(x1)
+							console.log(x2)
+
+							let NumberOfCustomers=document.getElementById('NumberOfCustomers').getContext('2d');
+							let NumberOfCustomerschart= new Chart(NumberOfCustomers,{
+								type:'bar',
+								data:{
+									labels:x1,
+									datasets:[{
+										label:'2016',
+										backgroundColor: ["#80618F","#6790B3", "#FEC166"],
+										data:x2,
+									},
+									{
+										label:'2017',
+										backgroundColor: "#6790B3",
+										data:[],
+									},
+									{
+										label:'2018',
+										backgroundColor: "#FEC166",
+										data:[],
+									}]
+								},
+								options: {
+      								legend: { display: true },
+									  title: {
+										display: true,
+										text: 'Number of Customers per year'
+									  },
+									scales: {
+										yAxes: [{
+										  scaleLabel: {
+											display: true,
+											labelString: 'No of Customers'
+										  }
+										}],
+										xAxes: [{
+										  scaleLabel: {
+											display: true,
+											labelString: 'Year'
+										  }
+										}]
+									  }
+									}
+							})
+							let canvas1 = document.getElementById("NumberOfCustomers")
+							canvas1.onclick = function(evt,item) {
+								let a=NumberOfCustomerschart.getElementAtEvent(evt)
+								console.log(a)
+								var clickedElementindex = a[0]["_index"]
+
+							  //get specific label by index
+							  var label = NumberOfCustomerschart.data.labels[clickedElementindex]
+
+							  //get value by index
+							  var value = NumberOfCustomerschart.data.datasets[0].data[clickedElementindex];
+								console.log(a)
+								console.log(clickedElementindex)
+								console.log(label)
+								console.log(value)
+								if(label=='2016' || label=='2017' || label=='2018') {
+									$.ajax({
+												type: "GET",
+												url: "CustomerCountMonthly/",
+												dataType: "json",
+												async: true,
+												data: {'label1': label},
+												success: function (data) {
+													console.log(data)
+													NumberOfCustomerschart.data.labels = data['customer_month']
+													NumberOfCustomerschart.data.datasets[0].data = data['customer_count_2016']
+													NumberOfCustomerschart.data.datasets[0].backgroundColor = '#80618F'
+													NumberOfCustomerschart.data.datasets[1].data = data['customer_count_2017']
+													NumberOfCustomerschart.data.datasets[2].data = data['customer_count_2018']
+													NumberOfCustomerschart.options.scales.xAxes[0].scaleLabel.labelString = 'Month'
+													NumberOfCustomerschart.options.title.text = 'Number of Customer per Month and Year'
+													NumberOfCustomerschart.update()
+
+													// alert("data transfered ")
+												}
+											}
+									)
+									console.log("again in js")
+								}
+								else{
+									$.ajax({
+												type: "GET",
+												url: "CustomerCountMonthly/",
+												dataType: "json",
+												async: true,
+												data: {'label1': label},
+												success: function (data) {
+													console.log(data)
+													NumberOfCustomerschart.data.labels = ['2016','2017','2018']
+													NumberOfCustomerschart.data.datasets[0].data = data['customer_count']
+													NumberOfCustomerschart.data.datasets[0].backgroundColor = ["#80618F","#6790B3", "#FEC166"]
+													NumberOfCustomerschart.data.datasets[1].data = []
+													NumberOfCustomerschart.data.datasets[2].data = []
+													NumberOfCustomerschart.options.scales.xAxes[0].scaleLabel.labelString = 'Year'
+													NumberOfCustomerschart.options.title.text = 'Number of Customers per Year'
+													NumberOfCustomerschart.update()
+													//alert("data transfered ")
+												}
+											}
+									)
+								}
+
+							}
+									</script>
+<h1></h1>
+<div class="container vikram">
+	<canvas id="OntimeDeliveryRate"></canvas>
+</div>
+					<script type="text/javascript">
+						let ontime_orders_jo = {{data2 | safe}}
+							console.log("in java script")
+							console.log(ontime_orders_jo)
+							var total_orders_missed_ontime = ((ontime_orders_jo['total_orders']-ontime_orders_jo['total_orders_ontime'])/ontime_orders_jo['total_orders'])*100
+							var total_orders_ontime= (ontime_orders_jo['total_orders_ontime']/ontime_orders_jo['total_orders'])*100
+							var month_year= (ontime_orders_jo['month_year'])
+							var ontime_delivery_rate= (ontime_orders_jo['ontime_delivery_rate'])
+							var sales_month_year= (ontime_orders_jo['sales_month_year'])
+							let OntimeDeliveryRate=document.getElementById('OntimeDeliveryRate').getContext('2d');
+							let OntimeDeliveryRatechart= new Chart(OntimeDeliveryRate, {
+								// 	type: 'doughnut',
+								// 	data: {
+								// 		labels: ["ontime", "missed_ontime"],
+								// 		datasets: [{
+								// 			label: 'orders',
+								// 			backgroundColor: ["#6790B3", "#FEC166"],
+								// 			data: [total_orders_ontime, total_orders_missed_ontime],
+								// 		}]
+								// 	},
+								// 	options: {
+								// 	  title: {
+								// 		display: true,
+								// 		text: 'Ontime Delivery Rate'
+								// 	  },
+								// 		plugins: {
+								// 		  datalabels: {
+								// 			anchor: 'center',
+								// 			align: 'center',
+								// 			formatter: Math.round+'%',
+								// 			font: {
+								// 			  weight: 'bold'
+								// 			}
+								// 		  }
+								// 		}
+								// 	}
+								// }
+								type: 'bar',
+								data: {
+									labels: month_year,
+									datasets: [{
+										label: 'sales',
+										yAxisID: 'A',
+										borderColor: "#6790B3",
+										fill: false,
+										backgroundColor:"#6790B3",
+										hoverBackgroundColor: "#6790B3",
+										data: sales_month_year,
+										order: 2
+									},
+										{
+										label: 'ontime delivery rate',
+											yAxisID: 'B',
+										borderColor: '#FEC166',
+										fill: false,
+										hoverBackgroundColor: '#FEC166',
+											backgroundColor:'#FEC166',
+										data: ontime_delivery_rate,
+										type: 'line',
+											order: 1
+										}]
+								},
+								options: {
+									legend: {display: true},
+									title: {
+										display: true,
+										text: 'ontime delivery rate vs sales over month year'
+									},
+									scales: {
+										yAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'sales'
+											},
+											id: 'A',
+											position: 'left',
+										},
+											{scaleLabel: {
+												display: true,
+												labelString: 'ontime delivery rate'
+											},
+											id: 'B',
+											position: 'right',
+										}],
+										xAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'Month Year'
+											}
+										}]
+									},
+									plugins: {
+										datalabels: {
+											anchor: 'top',
+											align: 'middle',
+											formatter: Math.round,
+											font: {
+												weight: 'bold'
+											}
+										}
+									}
+								}
+							})
+									</script>
+<h1></h1>
+<div class="container vikram">
+	<canvas id="PaymentMethods"></canvas>
+</div>
+					<script type="text/javascript">
+						let payment_methods_jo = {{data2 | safe}}
+							console.log("in java script")
+							console.log(ontime_orders_jo)
+							var payment_methods = payment_methods_jo['payment_methods']
+							var number_of_payments= payment_methods_jo['number_of_payments']
+							let PaymentMethods=document.getElementById('PaymentMethods').getContext('2d');
+							let PaymentMethodschart= new Chart(PaymentMethods, {
+										type: 'horizontalBar',
+										data: {
+											labels: payment_methods,
+											datasets: [{
+												label: 'No of Payments',
+												backgroundColor: ["#6790B3","#FEC166","#80618F","#48BAC2"],
+												data: number_of_payments,
+											}]
+										},
+										options: {
+											title: {
+												display: true,
+												text: 'PaymentMethods Usage'
+											},
+											scales: {
+												yAxes: [{
+													scaleLabel: {
+														display: true,
+														labelString: 'Payment Method'
+													}
+												}],
+												xAxes: [{
+													scaleLabel: {
+														display: true,
+														labelString: 'No of Payments'
+													}
+												}],
+												plugins: {
+													datalabels: {
+														anchor: 'center',
+														align: 'center',
+														formatter: Math.round,
+														font: {
+															weight: 'bold'
+														}
+													}
+												}
+											}
+										}
+									})
+									</script>
+<h2></h2>
+<h2></h2>
+<div class="container vikram">
+	<canvas id="ProductCategorySales"></canvas>
+</div>
+					<script type="text/javascript">
+						let product_category_jo = {{data2 | safe}}
+							console.log("in java script")
+							console.log(product_category_jo)
+							var Month= product_category_jo['Month']
+							var Electronic_Sales = product_category_jo['Electronic_Sales']
+							var Household_Sales= product_category_jo['Household_Sales']
+							var Others_Sales = product_category_jo['Others_Sales']
+							var PersonalCare_Sales= product_category_jo['PersonalCare_Sales']
+							var Sports_Sales= product_category_jo['Sports_Sales']
+							let ProductCategorySales=document.getElementById('ProductCategorySales').getContext('2d');
+							let ProductCategorySaleschart= new Chart(ProductCategorySales, {
+								type: 'bar',
+								data: {
+									labels: Month,
+									datasets: [
+											{
+										label: 'Electronics',
+										backgroundColor: "#6790B3",
+										data: Electronic_Sales,
+									},
+										{
+											label: 'Household',
+											backgroundColor: "#FEC166",
+											data: Household_Sales,
+										},
+										{
+											label: 'Personal Care',
+											backgroundColor: "#80618F",
+											data: PersonalCare_Sales,
+										},
+										{
+											label: 'Sports',
+											backgroundColor: "#48BAC2",
+											data: Sports_Sales,
+										},
+										{
+											label: 'Others',
+											backgroundColor: "#E8C6EB",
+											data: Others_Sales,
+										}]
+								},
+								options: {
+									title: {
+										display: true,
+										text: 'Product Super Category wise Monthly Sales'
+									},
+									scales: {
+										xAxes: [{ stacked: true,
+										scaleLabel: {
+														display: true,
+														labelString: 'Month'
+													}}],
+										yAxes: [{ stacked: true,
+										scaleLabel: {
+														display: true,
+														labelString: 'Sales'
+													}}]
+									}
+								}
+							})
+									</script>
+
+
+
+
+
+</body>
+</html>

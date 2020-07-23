@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <p>Customer page</p>
+    <div>
+        <form method="post" action="{% url 'cc' %}">{% csrf_token %}
+            <input type="text" name="customerid">
+            <button onclick="location.href='{% url 'cc' %}'">go</button><hr>
+            {% if data %}
+            {{data}}
+            {% endif %}
+            <div class="container">
+                <canvas id="mychart"></canvas>
+            </div>
+            <script>
+                let mychart=document.getElementById('mychart').getContext('2d');
+                let masspopchart= new Chart(mychart,{
+                    type:'bar',
+                    data:{
+                        labels:['Boston','hyd'],
+                        datasets:[{
+                            label:'populaion',
+                            data:[123,456]
+                        }]
+                    }
+                })
+            </script>
+        </form>
+    </div>
+<!--    <select>-->
+<!--    {% for element in data %}-->
+<!--    <option value={{ element.id }}>{{ element.name }}</option>-->
+<!--        {% endfor %}-->
+<!--    </select>-->
+
+</body>
+</html>

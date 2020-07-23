@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Customer</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!--	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+	<style type="text/css">
+		.helloworld{
+	width: 45%;
+	height: 200px;
+	float:left;
+	margin:1.66%;
+	background-color: #DDDDDD;
+}
+
+
+		.vikram {
+			 	width: 90%;
+
+			 float: center;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                text-align: center;
+                height: 100%;
+            }
+		.xyz{
+			background-color: #00bfff;
+			font-weight: bold;
+		}
+		.hel{
+			color: #fffff0;
+		}
+	</style>
+</head>
+<body>
+<!--<script src="https://code.jquery.com/jquery-2.1.4.js"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>-->
+<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></script>-->
+<!--<p>select the product super category for which you want to find the top 5 sellers</p>-->
+
+<!--<nav class="navbar navbar-default">-->
+<!--	<div class="container">-->
+<!--		<div class="navbar-header">-->
+<!--			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">-->
+<!--			<span class="sr-only">Toggle navigation</span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--			</button>-->
+<!--			<a href="OlistHome.html" class="navbar-brand">Olist Store</a>-->
+<!--		</div>-->
+<!--		<div class="collapse navbar-collapse" id="bs-nav-demo">-->
+<!--			<ul class="nav navbar-nav">-->
+<!--				<li><a href="#">About</a></li>-->
+<!--				<li><a href="#">Contact</a></li>-->
+<!--			</ul>-->
+<!--			<ul class="nav navbar-nav navbar-right">-->
+<!--				<li><a href="#">Sign Up</a></li>-->
+<!--				<li><a href="#">Login</a></li>-->
+<!--			</ul>-->
+<!--	</div>-->
+<!--	</div>-->
+
+<!--</nav>-->
+
+<nav class="navbar navbar-expand-lg xyz">
+  <a class="navbar-brand hel" href="OlistHome.html">Olist Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active hel" href="Facts.html">Facts Page <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="OlistExe.html">Olist Executive <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="Seller.html"> Seller<span class="sr-only">(current)</span></a>
+
+
+    </div>
+  </div>
+</nav>
+<h1></h1>
+<div class="container vikram">
+<!--	<a href="Customer.html">back</a>-->
+						<canvas id="top10products" style="width:1000px ;height:400px ;"></canvas>
+					</div>
+<!--						<h3> Products Dashboard</h3>-->
+
+					<script type="text/javascript">
+                			let jo = {{data2 | safe}}
+							console.log("in java script")
+							console.log(jo)
+							var x1 = jo['product_category']
+							var x2= jo['no_of_orders']
+							console.log(x1)
+							console.log(x2)
+
+							let top10products=document.getElementById('top10products').getContext('2d');
+							let top10productschart= new Chart(top10products,{
+								type:'bar',
+								data:{
+									labels:x1,
+									datasets:[{
+										label:'orders',
+										backgroundColor:'#5FC2B8',
+										data:x2
+									}]
+								},
+								options: {
+									// responsive: true,
+    								// maintainAspectRatio: false,
+									legend: { display: true },
+									title: {
+										display: true,
+											text: 'Number of Orders in particular Product Super Category'
+									},
+									scales: {
+										yAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'No of Orders'
+											}
+										}],
+											xAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'Product Category'
+											}
+										}]
+									},
+							}
+							})
+							let canvas = document.getElementById("top10products")
+							console.log(canvas)
+							canvas.onclick = function(evt,item) {
+								//alert('legend onClick: event:' + evt)
+								console.log ('legend onClick', evt)
+								console.log('legd item', item)
+								console.log(top10productschart)
+								let a=top10productschart.getElementAtEvent(evt)
+								console.log(a)
+								var clickedElementindex = a[0]["_index"]
+
+							  //get specific label by index
+							  var label = top10productschart.data.labels[clickedElementindex]
+
+							  //get value by index
+							  var value = top10productschart.data.datasets[0].data[clickedElementindex];
+								console.log(a)
+								console.log(clickedElementindex)
+								console.log(label)
+								console.log(value)
+								if(label.length<20){
+								$.ajax({
+									type:"GET",
+									url: "CustomerProducts/",
+									dataType: "json",
+									async: true,
+									data: {'label1': label
+									//     ,
+									// csrfmiddlewaretoken: '{{ csrf_token }}'
+									},
+									success: function (data) {
+										console.log(data)
+										console.log(data['products'])
+										top10productschart.data.labels=data['products']
+										top10productschart.data.datasets[0].data=data['products_count']
+										top10productschart.options.title.text='Top 10 Products in '+data['category']+' category'
+										top10productschart.options.scales.xAxes[0].scaleLabel.labelString='Product Id'
+										top10productschart.update()
+
+										//alert("data transfered ")
+										}
+									}
+								)
+								console.log("again in js")
+
+                				}
+							else{
+								$.ajax({
+									type:"GET",
+									url: "CustomerProducts/",
+									dataType: "json",
+									async: true,
+									data: {'label1': label
+									//     ,
+									// csrfmiddlewaretoken: '{{ csrf_token }}'
+									},
+									success: function (data) {
+										console.log(data)
+										console.log(data['products'])
+										top10productschart.data.labels=data['products']
+										top10productschart.data.datasets[0].data=data['products_count']
+										top10productschart.options.title.text='Number of Orders in particular Product Super Category'
+										top10productschart.options.scales.xAxes[0].scaleLabel.labelString='Product Category'
+										top10productschart.update()
+
+										//alert("data transfered ")
+										}
+									}
+								)
+								}}
+
+					</script>
+<h1></h1>
+<p>Select the Product Super Category for which you want to see top 10 sellers</p>
+<form method="post" action="{% url 'C' %}">{% csrf_token %}
+<select name="product_super_category">
+    <option selected="selected" disabled>Product Category</option>
+	<option selected>All</option>
+{% for k,v in data2.items %}
+    {% ifequal k 'pc' %}
+        {% for i in v %}
+			{{i}}
+            <option>{{i}}</option>
+        {% endfor %}
+    {% endifequal %}
+{% endfor %}
+</select>
+	<select name="view_by">
+		<option selected="selected" disabled>View by</option>
+		<option selected>Delivery Rate</option>
+		<option>Ratings</option>
+	</select>
+    <input type="submit" value="Select">
+</form>
+<h1></h1>
+<div class="container vikram">
+						<canvas id="top10sellers" ></canvas>
+					</div>
+<!--						<h3> Products Dashboard</h3>-->
+
+					<script type="text/javascript">
+                			let jo1 = {{data2 | safe}}
+							console.log("in java script")
+							console.log(jo1)
+							var x1 = jo1['seller_id']
+							var x2= jo1['rating']
+                            var x3= jo1['selected_category']
+							var x4= jo1['view_by']
+                            if(x3==''){
+                                x3='All'
+                            }
+                            if(x4==''){
+                            	x4='Delivery Rate'
+							}
+                            var label1
+							var yaxis
+                            if(x4=='Delivery Rate'){
+                            	label1='Delivery Success Rate'
+								yaxis='Delivery Rate'
+							}
+                            else{
+                            	label1='Rating'
+								yaxis='Rating'
+							}
+
+							console.log(x1)
+							console.log(x2)
+                            console.log(x3)
+
+							let top10sellers=document.getElementById('top10sellers').getContext('2d');
+							let top10sellerschart= new Chart(top10sellers,{
+								type:'bar',
+								data:{
+									labels:x1,
+									datasets:[{
+										label:label1,
+										backgroundColor:'#5FC2B8',
+										data:x2
+									}]
+								},
+								options: {
+									legend: { display: true },
+									title: {
+										display: true,
+											text: 'Top 10 Sellers for '+ x3 + ' category by '+ x4
+									},
+									scales: {
+										yAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: yaxis
+											}
+										}],
+											xAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'Seller Id'
+											}
+										}]
+									},
+							}
+							})
+                                    </script>
+<!--<a href="CustomerNext.html">link</a>-->
+</body>
+</html>

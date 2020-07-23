@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Facts</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style type="text/css">
+		.helloworld{
+	width: 45%;
+	height: 200px;
+	float:left;
+	margin:1.66%;
+	background-color: #DDDDDD;
+}
+        body{
+            background-color: #ffFACD;
+        }
+        .xyz{
+			background-color: #00bfff;
+			font-weight: bold;
+		}
+        .xa{
+            margin: 1.6%;
+        }
+		.hel{
+			color: #fffff0;
+		}
+        .vikram {
+			 	width: 40%;
+
+			 float: left;
+            margin-left: 2%;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                text-align: center;
+                height: 100%;
+            }
+        .v{
+            float:left;
+        }
+	</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg xyz">
+  <a class="navbar-brand hel" href="OlistHome.html">Olist Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active hel" href="Customer.html">Customers <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="OlistExe.html">Olist Executive <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="Seller.html"> Seller<span class="sr-only">(current)</span></a>
+
+
+    </div>
+  </div>
+</nav>
+<h1></h1>
+<div class="vikram">
+    <div class="v">
+    <p>Number of tuples in Customers : {{Customers}}</p>
+<p>Number of tuples in Sellers : {{Sellers}}</p>
+<p>Number of tuples in Geolocation : {{Geolocation}}</p>
+<p>Number of tuples in Delivery : {{Delivery}}</p>
+<p>Number of tuples in Orders : {{Orders}}</p>
+<p>Number of tuples in Products Ordered : {{Products_Ordered}}</p>
+<p>Number of tuples in Product : {{Product}}</p>
+<p>Number of tuples in Product_Category : {{Product_Category}}</p>
+<p>Number of tuples in Product_SuperCategory : {{Product_SuperCategory}}</p>
+<p>Number of tuples in Payments : {{Payments}}</p>
+<p>Number of tuples in Reviews : {{Reviews}}</p>
+<p>Number of tuples in Total : {{Total}}</p>
+    </div>
+    </div>
+
+<div class="vikram">
+<!--			<div class="container">-->
+
+<!--				<div class="container">-->
+<!--					<div class="container">-->
+						<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {
+        'packages':['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+      });
+      google.charts.setOnLoadCallback(drawRegionsMap);
+
+      function drawRegionsMap() {
+      	let d={{data | safe}}
+      	console.log(d)
+		  let res=[]
+		  res[0]=[d[0][0],d[0][1]]
+		  for (var i = 1; i < d.length; i++){
+  			res[i]=['BR-'+d[i][0],d[i][1]]
+		  console.log(res[i])}
+		  console.log(res)
+
+        var data = google.visualization.arrayToDataTable(res);
+
+        var options = {
+            region: "BR",
+            displayMode: 'regions',
+      resolution: 'provinces',
+            colorAxis: {
+      colors: ['#f7b0ad', '#ff0000'],
+                // datalessRegionColor: 'transparent',
+    }
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <div>
+        <p>Order density by State</p>
+    <div class="xa" id="regions_div" style="width:400; height:300"></div>
+        </div>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+body {
+	background-color: #7FDBFF;
+}
+.jumbotron{
+	background-color:  #ffFACD;
+}
+.helloworld{
+	width: 30%;
+	float:left;
+	margin:1.66%;
+	background-color: #FFF5EE;
+}
+a {
+    display: block;
+}
+.navcolor1{
+	background-color: black;
+}
+

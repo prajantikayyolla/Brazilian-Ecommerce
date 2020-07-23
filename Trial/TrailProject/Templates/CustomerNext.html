@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Next</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<p>Select the Product Super Category for which you want to see results:</p>
+<form method="post" action="{% url 'CN' %}">{% csrf_token %}
+<select name="product_super_category">
+    <option selected="selected" disabled>----Select----</option>
+{% for k,v in data2.items %}
+    {% ifequal k 'pc' %}
+        {% for i in v %}
+            <option>{{i}}</option>
+        {% endfor %}
+    {% endifequal %}
+{% endfor %}
+</select>
+    <input type="submit" value="Select">
+</form>
+<div class="container">
+						<canvas id="top10sellers"></canvas>
+					</div>
+<!--						<h3> Products Dashboard</h3>-->
+
+					<script type="text/javascript">
+                			let jo = {{data2 | safe}}
+							console.log("in java script")
+							console.log(jo)
+							var x1 = jo['seller_id']
+							var x2= jo['rating']
+                            var x3= jo['selected_category']
+                            if(x3==''){
+                                x3='All'
+                            }
+							console.log(x1)
+							console.log(x2)
+                            console.log(x3)
+
+							let top10sellers=document.getElementById('top10sellers').getContext('2d');
+							let top10sellerschart= new Chart(top10sellers,{
+								type:'bar',
+								data:{
+									labels:x1,
+									datasets:[{
+										label:'Delivery Success Rate',
+										backgroundColor:'#223388',
+										data:x2
+									}]
+								},
+								options: {
+									legend: { display: true },
+									title: {
+										display: true,
+											text: 'Top 10 Sellers for '+ x3 + ' category'
+									},
+									scales: {
+										yAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'Ontime Delivery Rate'
+											}
+										}],
+											xAxes: [{
+											scaleLabel: {
+												display: true,
+												labelString: 'Seller Id'
+											}
+										}]
+									},
+							}
+							})
+                                    </script>
+</body>
+</html>

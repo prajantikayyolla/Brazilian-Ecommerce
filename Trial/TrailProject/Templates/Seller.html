@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Seller</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<!--	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">-->
+		<style>
+			.navcolor{
+				background-color: #7FDBFF;
+			}
+
+		.vikram {
+			 	width: 90%;
+
+			 float: center;
+                border: 1px solid black;
+                border-radius: 4px;
+                padding-top: 1%;
+                padding-bottom: 1%;
+                text-align: center;
+                height: 100%;
+            }
+			.xyz{
+			background-color: #00bfff;
+			font-weight: bold;
+		}
+		.hel{
+			color: #fffff0;
+		}
+	</style>
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!--<nav class="navbar navbar-default">-->
+<!--	<div class="container">-->
+<!--		<div class="navbar-header">-->
+<!--			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">-->
+<!--			<span class="sr-only">Toggle navigation</span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--	        <span class="icon-bar"></span>-->
+<!--			</button>-->
+<!--			<a href="OlistHome.html" class="navbar-brand">Olist Store</a>-->
+<!--		</div>-->
+<!--		<div class="collapse navbar-collapse" id="bs-nav-demo">-->
+<!--			<ul class="nav navbar-nav">-->
+<!--				<li><a href="#">About</a></li>-->
+<!--				<li><a href="#">Contact</a></li>-->
+<!--			</ul>-->
+<!--			<ul class="nav navbar-nav navbar-right">-->
+<!--				<li><a href="#">Sign Up</a></li>-->
+<!--				<li><a href="#">Login</a></li>-->
+<!--			</ul>-->
+<!--	</div>-->
+<!--</nav>-->
+
+<nav class="navbar navbar-expand-lg xyz">
+  <a class="navbar-brand hel" href="OlistHome.html">Olist Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+
+		<a class="nav-item nav-link active hel" href="OlistExe.html">Olist Executive <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="Customer.html">Customers <span class="sr-only">(current)</span></a>
+		<a class="nav-item nav-link active hel" href="Facts.html">Facts Page <span class="sr-only">(current)</span></a>
+
+    </div>
+  </div>
+</nav>
+<marquee behavior="scroll" direction="left">Top seller for current year: {{top_seller}}</marquee>
+<h1></h1>
+<div class="container vikram">
+	<canvas id="OrdersPerHour"></canvas>
+</div>
+<script type="text/javascript">
+    let ordersperhour_jo = {{data2 | safe}}
+    console.log("in java script")
+    console.log(ordersperhour_jo)
+    var hour = ordersperhour_jo['hour']
+    var number_of_orders_2016= ordersperhour_jo['number_of_orders_2016']
+    var number_of_orders_2017= ordersperhour_jo['number_of_orders_2017']
+    var number_of_orders_2018= ordersperhour_jo['number_of_orders_2018']
+    let OrdersPerHour=document.getElementById('OrdersPerHour').getContext('2d');
+    let OrdersPerHourchart= new Chart(OrdersPerHour,{
+        type:'line',
+        data:{
+            labels:hour,
+            datasets:[{
+            label:'2016',
+                borderColor: "#3e95cd",
+                fill: false,
+            hoverBackgroundColor: '#272829',
+            data:number_of_orders_2016,
+            },
+            {
+            label:'2017',
+                borderColor: "#8e5ea2",
+                fill: false,
+            hoverBackgroundColor: '#272829',
+            data:number_of_orders_2017,
+            },
+            {
+            label:'2018',
+                borderColor: "#3cba9f",
+                fill: false,
+            hoverBackgroundColor: '#272829',
+            data:number_of_orders_2018,
+            }]
+                },
+        options: {
+            legend: { display: true },
+            title: {
+                display: true,
+                    text: 'Number of Orders per hour'
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'No of Orders'
+                    }
+                }],
+                    xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Hour'
+                    }
+                }]
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'center',
+                    align: 'top',
+                    formatter: Math.round,
+                    font: {
+                        weight: 'bold'
+                    }
+                }
+            }
+        }
+    })
+</script>
+<h1></h1>
+<p>Select the seller id so as to compare with top seller</p>
+<!--<form method="post" action="{% url 'seller' %}">{% csrf_token %}-->
+<!--    Seller_Id: <input type="text" name="seller_id">-->
+<!--    <input type="submit" value="Submit">-->
+<!--</form>-->
+<form method="post" action="{% url 'seller' %}">{% csrf_token %}
+	<select name="seller_id">
+    <option selected="selected" disabled>Select Seller Id</option>
+		{% for k,v in data2.items%}
+    		{% ifequal k 'seller_id_list' %}
+        		{% for i in v %}
+					{{i}}
+            		<option>{{i}}</option>
+        		{% endfor %}
+    		{% endifequal %}
+		{% endfor %}
+	</select>
+    <input type="submit" value="Select">
+</form>
+<h1></h1>
+
+<!--<form method="post" action="{% url 'C' %}">{% csrf_token %}-->
+<!--<select name="product_super_category">-->
+<!--    <option selected="selected" disabled>Product Category</option>-->
+<!--	<option selected>All</option>-->
+<!--{% for k,v in data2.items %}-->
+<!--    {% ifequal k 'pc' %}-->
+<!--        {% for i in v %}-->
+<!--			{{i}}-->
+<!--            <option>{{i}}</option>-->
+<!--        {% endfor %}-->
+<!--    {% endifequal %}-->
+<!--{% endfor %}-->
+<!--</select>-->
+
+
+
+
+
+
+
+<div class="container vikram">
+	<canvas id="SellerSales"></canvas>
+</div>
+<script type="text/javascript">
+    let sellersales_jo = {{data2 | safe}}
+    console.log("in java script")
+    console.log(sellersales_jo)
+    var month_year = sellersales_jo['month_year']
+    var sales= sellersales_jo['sales']
+    var sales_2nd=sellersales_jo['sales_2nd']
+    let SellerSales=document.getElementById('SellerSales').getContext('2d');
+    let SellerSaleschart= new Chart(SellerSales,{
+        type:'line',
+        data:{
+            labels:month_year,
+            datasets:[{
+            label:'top_seller',
+                borderColor: "#3e95cd",
+                fill: false,
+            hoverBackgroundColor: '#272829',
+            data:sales,
+            },
+            {
+            label:'other_seller',
+                borderColor: "#8e5ea2",
+                fill: false,
+            hoverBackgroundColor: '#272829',
+            data:sales_2nd,
+            }]
+                },
+        options: {
+            legend: { display: true },
+            title: {
+                display: true,
+                    text: 'Seller sales over month year'
+            },
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Sales Value'
+                    }
+                }],
+                    xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month Year'
+                    }
+                }]
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'center',
+                    align: 'top',
+                    formatter: Math.round,
+                    font: {
+                        weight: 'bold'
+                    }
+                }
+            }
+        }
+    })
+</script>
+
+
+
+<!--<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
+<!--    <script type="text/javascript">-->
+<!--      google.charts.load('current', {-->
+<!--        'packages':['geochart'],-->
+<!--        // Note: you will need to get a mapsApiKey for your project.-->
+<!--        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings-->
+<!--        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'-->
+<!--      });-->
+<!--      google.charts.setOnLoadCallback(drawRegionsMap);-->
+
+<!--      function drawRegionsMap() {-->
+<!--      	let d={{data2 | safe}}-->
+<!--      	console.log(d)-->
+<!--		  let res=[]-->
+<!--		  res[0]=[d['data'][0][0],d['data'][0][1]]-->
+<!--		  for (var i = 1; i < d['data'].length; i++){-->
+<!--  			res[i]=['BR-'+d['data'][i][0],d['data'][i][1]]-->
+<!--		  console.log(res[i])}-->
+<!--		  console.log(res)-->
+
+<!--        var data = google.visualization.arrayToDataTable(res);-->
+
+<!--        var options = {-->
+<!--            region: "BR",-->
+<!--            displayMode: 'regions',-->
+<!--      resolution: 'provinces',-->
+<!--            colorAxis: {-->
+<!--      colors: ['#f7b0ad', '#ff0000'],-->
+<!--                // datalessRegionColor: 'transparent',-->
+<!--    }-->
+<!--        };-->
+
+<!--        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));-->
+<!--        chart.draw(data, options);-->
+<!--      }-->
+<!--    </script>-->
+<!--    <div id="regions_div"></div>-->
+
+<!--    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
+<!--    <script type="text/javascript">-->
+<!--        let d={{data2 | safe}}-->
+<!--        let d1=d['state_sales']-->
+<!--      google.charts.load('current', {'packages':['table']});-->
+<!--      google.charts.setOnLoadCallback(drawTable);-->
+<!--      function drawTable() {-->
+<!--        var data = new google.visualization.DataTable();-->
+<!--        data.addColumn('string', 'State');-->
+<!--        data.addColumn('number', 'Sales');-->
+<!--        data.addRows(d1);-->
+<!--        var options = {-->
+<!--            color: '#f7b0ad'-->
+<!--        }-->
+
+<!--        var table = new google.visualization.Table(document.getElementById('table_div'));-->
+
+<!--        table.draw(data, {showRowNumber: true, width: '25%', height: '25%'});-->
+<!--      }-->
+<!--    </script>-->
+<!--    <div id="table_div"></div>-->
+
